@@ -12,7 +12,7 @@ def get_duration():
     if not url:
         return jsonify({'error': 'Missing URL parameter'}), 400
     try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_file:
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file.write(requests.get(url).content)
             temp_file_path = temp_file.name
 
