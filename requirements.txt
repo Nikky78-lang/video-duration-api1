@@ -2,3 +2,5 @@ Flask
 requests
 moviepy
 gunicorn
+imageio
+imageio-ffmpeg
