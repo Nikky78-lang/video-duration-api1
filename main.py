@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import requests  # <-- Додано цей імпорт
 import moviepy.editor as mp
 import os
 import tempfile
