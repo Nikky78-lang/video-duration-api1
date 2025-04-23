@@ -14,7 +14,7 @@ def get_duration():
         return jsonify({'error': 'Missing URL parameter'}), 400
     try:
         content = requests.get(url).content
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mov') as temp_file:
             temp_file.write(content)
             video = mp.VideoFileClip(temp_file.name)
             os.remove(temp_file.name)
@@ -23,8 +23,7 @@ def get_duration():
     except Exception as e:
         return jsonify({
             'error': str(e),
-            'url': url,
-            'content': content
+            'url': url
         }), 500
 
 if __name__ == '__main__':
