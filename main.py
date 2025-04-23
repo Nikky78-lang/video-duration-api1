@@ -17,7 +17,7 @@ def get_duration():
         with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_file:
             temp_file.write(content)
             video = mp.VideoFileClip(temp_file.name)
-            os.remove(temp_file_path)
+            os.remove(temp_file.name)
             return jsonify(video.duration)
         return jsonify(0)
     except Exception as e:
