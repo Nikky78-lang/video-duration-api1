@@ -1,25 +1,30 @@
 from flask import Flask, request, jsonify
-import subprocess
+import requests
+import tempfile
+import os
+import moviepy.editor as mp
 
 app = Flask(__name__)
 
-@app.route("/duration", methods=["GET"])
-def get_video_duration():
-    url = request.args.get("url")
+@app.route('/duration', methods=['GET'])
+def get_duration():
+    url = request.args.get('url')
     if not url:
-        return jsonify({'error': 'Missing URL'}), 400
+        return jsonify({"error": "Missing URL parameter"}), 400
+
     try:
-        result = subprocess.run([
-            'ffprobe', '-v', 'error',
-            '-show_entries', 'format=duration',
-            '-of', 'default=noprint_wrappers=1:nokey=1',
-            url
-        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp:
+            tmp.write(requests.get(url).content)
+            tmp_path = tmp.name
 
-        if result.returncode != 0:
-            return jsonify({'error': result.stderr.strip()}), 500
+        clip = mp.VideoFileClip(tmp_path)
+        duration = int(clip.duration)  # округлення вниз до цілого числа
+        clip.close()
+        os.remove(tmp_path)
 
-        duration = float(result.stdout.strip())
-        return jsonify({'duration': duration})
+        return jsonify({"duration": duration})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run()
