@@ -16,7 +16,7 @@ def get_duration():
             temp_file.write(requests.get(url).content)
             video = mp.VideoFileClip(temp_file.name)
             os.remove(temp_file_path)
-            return jsonify(video.duration)
+            return jsonify(requests.get(url).content)
         return jsonify(0)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
